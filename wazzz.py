@@ -101,13 +101,29 @@ class ImageProcessorApp:
 
     def apply_average_filter_action(self, kernel_size_entry):
         kernel_size = int(kernel_size_entry.get())
-        # Здесь продолжается ваш код для применения среднего фильтра с заданным размером ядра
+        if hasattr(self, 'original_image'):
+            # Создаем массив NumPy из изображения
+            np_image = np.array(self.original_image)
+            # Создаем ядро фильтра
+            kernel = np.ones((kernel_size, kernel_size)) / (kernel_size ** 2)
+            # Применяем фильтр к изображению
+            filtered_image = cv2.filter2D(np_image, -1, kernel)
+            # Преобразуем обратно в формат PIL Image
+            filtered_image = Image.fromarray(filtered_image)
+            self.display_image(filtered_image)
 
-    def draw_circle():
-    center_x = int(center_x_entry.get())
-    center_y = int(center_y_entry.get())
-    radius = int(radius_entry.get())
-    canvas.create_oval(center_x - radius, center_y - radius, center_x + radius, center_y + radius, outline='black')
+
+    def draw_circle(self):
+        if hasattr(self, 'original_image'):
+            center_x = int(input("Введите X координату центра круга: "))
+            center_y = int(input("Введите Y координату центра круга: "))
+            radius = int(input("Введите радиус круга: "))
+            
+            drawn_image = self.original_image.copy()
+            draw = ImageDraw.Draw(drawn_image)
+            draw.ellipse([(center_x - radius, center_y - radius), (center_x + radius, center_y + radius)], outline='black')
+            del draw
+            self.display_image(drawn_image)
 
 root = tk.Tk()
 canvas = tk.Canvas(root, width=400, height=400)
